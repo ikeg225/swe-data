@@ -20,21 +20,6 @@ class Posting:
     
     def get_date(self):
         return self.get_dict()['date']
-
-    #def get_position_title(self):
-    #    words = self.get_dict()['title'].lower().split(" ")
-    #    remove = {
-    #        '-': None,
-    #        '—': None,
-    #        '–': None,
-    #        'summer': None,
-    #        'fall': None,
-    #        'winter': None,
-    #        'spring': None,
-    #        ',': None,
-    #        self.get_sitename().lower(): None
-    #    }
-    #    return [word.capitalize() for word in words if word not in remove].join(" ")
     
     def get_sitename(self):
         return self.get_dict()['sitename']
