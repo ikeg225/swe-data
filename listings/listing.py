@@ -1,17 +1,33 @@
 from bs4 import BeautifulSoup
+from locations import places
 import requests
 import re
 
 class Listing:
     def __init__(self, url, headers):
         self.posting = BeautifulSoup(requests.get(url, headers=headers).content, 'lxml')
-        print(self.posting)
+        #print(self.posting)
         self.url = url
+        self.baseurl = re.match('^https?:\/\/[^#?\/]+', url)[0]
     
     @staticmethod
     def clean_title(title):
-        remove = set(['summer', 'fall', 'winter', 'spring'])
-        return ' '.join([word.capitalize() for word in title if not (word in remove or word.isnumeric())])
+        time = set(['summer', 'fall', 'winter', 'spring'])
+        upper = set(['ios', 'ui'])
+        new_title, locations, times = [], [], []
+        for word in title:
+            if word in time or word.isnumeric() or word in places:
+                if word in places:
+                    locations.append(word.capitalize())
+                else:
+                    times.append(word.capitalize())
+            else:
+                if word in upper:
+                    new_title.append(word.upper())
+                else:
+                    new_title.append(word.capitalize())
+                
+        return { "position": ' '.join(new_title), "locations": ','.join(locations), "times": ' '.join(times) }
     
     @staticmethod
     def swe_position(title):
@@ -19,7 +35,7 @@ class Listing:
         intern_keywords = set(['intern', 'internship'])
         field_keywords = set(['software', 'data', 'trading', 'trade', 'web', 'development', 'python', 'java', 'javascript', 'ruby',
         'user', 'interface', 'quantitative', 'full', 'stack', 'front', 'end', 'back', 'react', 'swift', 'ios', 'engineer',
-        'engineering', 'technology', 'android', 'analyst'])
+        'engineering', 'technology', 'android', 'analyst', 'c++', 'c#'])
         for word in title:
             if word in field_keywords:
                 field_check = True
@@ -33,16 +49,13 @@ class Listing:
         urls = set()
         for url in self.posting.find_all('a', href=True):
             title = url.get_text().strip().lower().replace("\n", " ")
-            filtered = list(filter(None, re.split('\W+', title)))
+            filtered = list(filter(None, re.split('(?![\+\#])[\W]', title)))
             if Listing.swe_position(filtered):
                 position = Listing.clean_title(filtered)
-                urls.add((url.get('href'), position))
+                urls.add((self.add_base_url(url.get('href')), position["position"], position["locations"], position["times"]))
         return urls
-
-headers = {
-    'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
-}
-listing = Listing(url="https://boards.greenhouse.io/bridgewater89", headers=headers)
-lis = listing.get_listing()
-print(lis)
-print(len(lis))
+    
+    def add_base_url(self, slug):
+        if not self.baseurl in slug:
+            slug = self.baseurl + slug
+        return slug
