@@ -35,7 +35,7 @@ class Listing:
         intern_keywords = set(['intern', 'internship'])
         field_keywords = set(['software', 'data', 'trading', 'trade', 'web', 'development', 'python', 'java', 'javascript', 'ruby',
         'user', 'interface', 'quantitative', 'full', 'stack', 'front', 'end', 'back', 'react', 'swift', 'ios', 'engineer',
-        'engineering', 'technology', 'android', 'analyst', 'c++', 'c#'])
+        'engineering', 'technology', 'android', 'analyst', 'c++', 'c#', 'tech'])
         for word in title:
             if word in field_keywords:
                 field_check = True
