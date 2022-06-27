@@ -1,14 +1,36 @@
-from bs4 import BeautifulSoup
-from locations import places
-import requests
 import re
+import requests
+from proxy import Proxy
+from locations import places
+from bs4 import BeautifulSoup
+from useragent import UserAgent
 
 class Listing:
-    def __init__(self, url, headers):
-        self.posting = BeautifulSoup(requests.get(url, headers=headers).content, 'lxml')
-        #print(self.posting)
-        self.url = url
-        self.baseurl = re.match('^https?:\/\/[^#?\/]+', url)[0]
+    def __init__(self, url, proxyOn=True, headers=None):
+        if proxyOn:
+            proxy = Proxy()
+            proxies = {
+                'http': 'http://' + proxy.getProxy(),
+                'https': 'http://' + proxy.getProxy(),
+            }
+        success = False
+        
+        while success != True:
+            try:
+                if proxyOn:
+                    headers = {
+                        'user-agent': UserAgent.randomAgent()
+                    }
+                    req = requests.get(url, proxies=proxies, headers=headers)
+                else:
+                    req = requests.get(url, headers=headers)
+                req.raise_for_status()
+                self.posting = BeautifulSoup(req.content, 'lxml')
+                self.url = url
+                self.baseurl = re.match('^https?:\/\/[^#?\/]+', url)[0]
+                success = True
+            except Exception as err:
+                print(err)
     
     @staticmethod
     def clean_title(title):
@@ -35,7 +57,7 @@ class Listing:
         intern_keywords = set(['intern', 'internship'])
         field_keywords = set(['software', 'data', 'trading', 'trade', 'web', 'development', 'python', 'java', 'javascript', 'ruby',
         'user', 'interface', 'quantitative', 'full', 'stack', 'front', 'end', 'back', 'react', 'swift', 'ios', 'engineer',
-        'engineering', 'technology', 'android', 'analyst', 'c++', 'c#', 'tech'])
+        'engineering', 'technology', 'android', 'analyst', 'c++', 'c#', 'tech', 'ai', 'mechanical'])
         for word in title:
             if word in field_keywords:
                 field_check = True
@@ -59,3 +81,6 @@ class Listing:
         if not self.baseurl in slug:
             slug = self.baseurl + slug
         return slug
+    
+    def get_posting(self):
+        return self.posting
