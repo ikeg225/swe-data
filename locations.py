@@ -1407,5 +1407,5 @@ places = set([
     "klaipėdos","apskritis","šiaulių","apskritis","marijampolės","apskritis","kauno","apskritis","alytaus","apskritis","valmieras","rajons","tukuma","rajons","jēkabpils","municipality","daugavpils","municipality","cēsu","rajons","sha‘bīyat","al","buţnān",
     "banghāzī","sha‘bīyat","al","wāḩāt","al","kufrah","al","jabal","al","akhḑar","an","nuqāţ","al","khams","sha‘bīyat","al","jabal","al","gharbī","al","jufrah",
     "al","marqab","surt","az","zāwiyah","sha‘bīyat","nālūt","sha‘bīyat","ghāt","ash","shāţiʼ","sha‘bīyat","wādī","al","ḩayāt","oriental","souss-massa-drâa","doukkala-abda","taza-al","hoceima-taounate","rabat-salé-zemmour-zaër",
-    "tanger-tétouan","guelmim-es","smara","gharb-chrarda-beni","hssen","chaouia-ouardigha","fès-boulemane","grand","casablanca","meknès-tafilalet","marrakech-tensift-al","haouz","tadla-azilal","oued","ed","dahab-lagouira"
+    "tanger-tétouan","guelmim-es","smara","gharb-chrarda-beni","hssen","chaouia-ouardigha","fès-boulemane","grand","casablanca","meknès-tafilalet","marrakech-tensift-al","haouz","tadla-azilal","oued","ed","dahab-lagouira", "remote", "remotely"
 ])

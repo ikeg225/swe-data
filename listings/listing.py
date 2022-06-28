@@ -6,10 +6,16 @@ from bs4 import BeautifulSoup
 from useragent import UserAgent
 
 class Listing:
-    def __init__(self, url, proxyOn=True, headers=None):
+    def __init__(self, url, db, proxyOn=True, headers=None):
+        self.proxyOn = proxyOn
+        self.url = url
+        self.headers = headers
+        self.db = db
+        self.collection = db["companies"]
+
         if proxyOn:
             proxy = Proxy()
-            proxies = {
+            self.proxies = {
                 'http': 'http://' + proxy.getProxy(),
                 'https': 'http://' + proxy.getProxy(),
             }
@@ -17,16 +23,9 @@ class Listing:
         
         while success != True:
             try:
-                if proxyOn:
-                    headers = {
-                        'user-agent': UserAgent.randomAgent()
-                    }
-                    req = requests.get(url, proxies=proxies, headers=headers)
-                else:
-                    req = requests.get(url, headers=headers)
-                req.raise_for_status()
-                self.posting = BeautifulSoup(req.content, 'lxml')
-                self.url = url
+                self.req = self.get_req(url=url, headers=headers)
+                self.req.raise_for_status()
+                self.posting = BeautifulSoup(self.req.content, 'lxml')
                 self.baseurl = re.match('^https?:\/\/[^#?\/]+', url)[0]
                 success = True
             except Exception as err:
@@ -84,3 +83,32 @@ class Listing:
     
     def get_posting(self):
         return self.posting
+    
+    def get_raw(self):
+        return self.req.content
+
+    def get_req(self, url, headers, redirect=True):
+        if self.proxyOn:
+            headers = {
+                'user-agent': UserAgent.randomAgent()
+            }
+            return requests.get(url, proxies=self.proxies, headers=headers, allow_redirects=redirect)
+        else:
+            return requests.get(url, headers=headers, allow_redirects=redirect)
+    
+    def add_to_database(self, name, base_url, post_url, locations, date, timeframe):
+        posting = {
+            "post": post_url,
+            "locations": locations,
+            "date": date,
+            "timeframe": timeframe
+        }
+        if self.collection.count_documents({ '_id' : base_url }, limit = 1):
+            self.db
+        else:
+            company = {
+                "_id" : base_url,
+                "name" : name,
+                "baseurl" : base_url,
+            }
+            self.db.insert_one(company)

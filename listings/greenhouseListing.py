@@ -2,8 +2,8 @@ from listings.listing import Listing
 import re
 
 class GreenHouse(Listing):
-    def __init__(self, url, headers):
-        super().__init__(url=url, headers=headers)
+    def __init__(self, url, proxyOn=True, headers=None):
+        super().__init__(url=url, proxyOn=proxyOn, headers=headers)
     
     def get_listing(self):
         urls = set()
