@@ -4,6 +4,7 @@ import requests
 from dateutil import parser
 from useragent import UserAgent
 from listings.listing import Listing 
+from locations import english
 
 class MuseHelper(Listing):
     def __init__(self, url, db, proxyOn=True, headers=None):
@@ -18,17 +19,22 @@ class MuseHelper(Listing):
             if Listing.swe_position(filtered):
                 position = Listing.clean_title(filtered)
 
-                locations = []
+                locations, is_english = [], False
                 for location in post.get('locations', []):
+                    names = location.get('name', '')
+                    for i in re.split('\W+', names):
+                        if i in english:
+                            is_english = True
                     locations.append(location.get('name', ''))
-
-                date = post.get('publication_date', '')
-                if date:
-                    date = parser.parse(date)
                 
-                id = post.get('id', '')
-                redirect_url = 'https://www.themuse.com/job/redirect/' + id
-                post_url = self.get_req(url=redirect_url, headers=self.headers, redirect=False).headers['Location']
-                base_url = re.match('^https?:\/\/([^#?\/]+)', post_url)[0]
+                if is_english:
+                    date = post.get('publication_date', '')
+                    if date:
+                        date = parser.parse(date)
+            
+                    id = post.get('id', '')
+                    redirect_url = 'https://www.themuse.com/job/redirect/' + id
+                    post_url = self.get_req(url=redirect_url, headers=self.headers, redirect=False).headers['Location']
+                    base_url = re.match('^https?:\/\/([^#?\/]+)', post_url)[0]
 
-                self.add_to_database(name=position['position'], base_url=base_url, post_url=post_url, locations=locations, date=date, timeframe=position['times'])
+                    self.add_to_database(name=position['position'], base_url=base_url, post_url=post_url, locations=locations, date=date, timeframe=position['times'])

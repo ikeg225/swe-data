@@ -15,6 +15,20 @@ def csv_to_txt():
 
 # csv_to_txt()
 
+english = ['ala', 'al', 'ill', 'il', 'miss', 'ms', 'n.c.', 'nc', 'vt', 'vt', 'ariz', 'az', 'ind', 'in', 'mo', 
+'mo', 'n.d.', 'nd', 'va', 'va', 'ark', 'ar', 'kan', 'ks', 'mont', 'mt', 'okla', 'ok', 'wash', 'wa', 'calif', 'ca', 
+'ky', 'ky', 'neb', 'ne', 'ore', 'or', 'w.va.', 'wv', 'colo', 'co', 'la', 'la', 'nev', 'nv', 'pa', 'pa', 'wis', 'wi', 
+'conn', 'ct', 'md', 'md', 'n.h.', 'nh', 'r.i.', 'ri', 'wyo', 'wy', 'del', 'de', 'mass', 'ma', 'n.j.', 'nj', 's.c.', 
+'sc', 'fla', 'fl', 'mich', 'mi', 'n.m.', 'nm', 's.d.', 'sd', 'ga', 'ga', 'minn', 'mn', 'n.y.', 'ny', 'tenn', 'tn', 'alaska', 'alabama', 
+'arkansas', 'american', 'samoa', 'arizona', 'california', 'colorado', 'connecticut', 'delaware', 'florida', 'georgia', 
+'guam', 'hawaii', 'iowa', 'idaho', 'illinois', 'indiana', 'kansas', 'kentucky', 'louisiana', 'massachusetts', 'maryland', 
+'maine', 'michigan', 'minnesota', 'missouri', 'mississippi', 'montana', 'north', 'carolina', 'north', 'dakota', 
+'nebraska', 'hampshire', 'jersey', 'mexico', 'nevada', 'york', 'ohio', 'oklahoma', 'oregon', 
+'pennsylvania', 'puerto', 'rico', 'rhode', 'island', 'south', 'carolina', 'south', 'dakota', 'tennessee', 'texas', 
+'utah', 'virginia', 'virgin', 'islands', 'vermont', 'washington', 'wisconsin', 'west', 'virginia', 'wyoming', 'us', 'united', 'states', 
+'canada', 'alberta', 'british', 'columbia', 'manitoba', 'brunswick', 'newfoundland', 'and', 'labrador', 'northwest', 
+'territories', 'nova', 'scotia', 'nunavut', 'ontario', 'prince', 'edward', 'quebec', 'saskatchewan', 'yukon', 'remote', 'home']
+
 places = set([
     "радовиш","ресен","сарај","славутич","студеничани","теарце","бережани","желино","липково","крива","паланка","зуунмод","неготино","ḩadīthah","ḩajjah","ḩalḩūl","ḩalabjah","ḩalfāyā","ḩalwān","ḩamāh","ḩarastā",
     "ḩawallī","ḩawsh","‘īsá","ḏânan","'ali","sabieh","'s-gravenzande","'s-hertogenbosch","’aïn","abid","’aïn","benian","’aïn","deheb","’aïn","el","bell","’aïn","el","berd","‘aïn","el","hadjel",
