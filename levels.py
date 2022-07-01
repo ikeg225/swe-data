@@ -23,7 +23,6 @@ class Levels:
             '': -1
         }
         for posting in postings:
-            print(posting)
             company = ''.join(re.findall('(\w+)', posting['company'])).lower()
             position = ''.join(re.findall('(\w+)', posting['title'])).lower()
             hourlysalary = posting['hourlySalary'] if 'hourlySalary' in posting else ''

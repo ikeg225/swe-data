@@ -15,19 +15,16 @@ def csv_to_txt():
 
 # csv_to_txt()
 
-english = ['ala', 'al', 'ill', 'il', 'miss', 'ms', 'n.c.', 'nc', 'vt', 'vt', 'ariz', 'az', 'ind', 'in', 'mo', 
-'mo', 'n.d.', 'nd', 'va', 'va', 'ark', 'ar', 'kan', 'ks', 'mont', 'mt', 'okla', 'ok', 'wash', 'wa', 'calif', 'ca', 
-'ky', 'ky', 'neb', 'ne', 'ore', 'or', 'w.va.', 'wv', 'colo', 'co', 'la', 'la', 'nev', 'nv', 'pa', 'pa', 'wis', 'wi', 
-'conn', 'ct', 'md', 'md', 'n.h.', 'nh', 'r.i.', 'ri', 'wyo', 'wy', 'del', 'de', 'mass', 'ma', 'n.j.', 'nj', 's.c.', 
-'sc', 'fla', 'fl', 'mich', 'mi', 'n.m.', 'nm', 's.d.', 'sd', 'ga', 'ga', 'minn', 'mn', 'n.y.', 'ny', 'tenn', 'tn', 'alaska', 'alabama', 
-'arkansas', 'american', 'samoa', 'arizona', 'california', 'colorado', 'connecticut', 'delaware', 'florida', 'georgia', 
-'guam', 'hawaii', 'iowa', 'idaho', 'illinois', 'indiana', 'kansas', 'kentucky', 'louisiana', 'massachusetts', 'maryland', 
-'maine', 'michigan', 'minnesota', 'missouri', 'mississippi', 'montana', 'north', 'carolina', 'north', 'dakota', 
-'nebraska', 'hampshire', 'jersey', 'mexico', 'nevada', 'york', 'ohio', 'oklahoma', 'oregon', 
-'pennsylvania', 'puerto', 'rico', 'rhode', 'island', 'south', 'carolina', 'south', 'dakota', 'tennessee', 'texas', 
-'utah', 'virginia', 'virgin', 'islands', 'vermont', 'washington', 'wisconsin', 'west', 'virginia', 'wyoming', 'us', 'united', 'states', 
-'canada', 'alberta', 'british', 'columbia', 'manitoba', 'brunswick', 'newfoundland', 'and', 'labrador', 'northwest', 
-'territories', 'nova', 'scotia', 'nunavut', 'ontario', 'prince', 'edward', 'quebec', 'saskatchewan', 'yukon', 'remote', 'home']
+english = set([
+    'wash.', 'ariz', 'ok', 'vt.', 'nv', 'la.', 'pennsylvania', 'n.y.', 'ca', 'texas', 'colorado', 'virgin', 'mi', 'tenn', 'south', 'hi', 'ore.', 'tx', 'wisc.', 'and', 'ne', 'la', 'ak', 'ga.', 'rico', 'ny', 
+    'mo', 'british', 'mich.', 'wash', 'alabama', 'or', 'va.', 'hawaii', 'fla.', 'nh', 'wy', 'n.c.', 'territories', 'ariz.', 'okla.', 'id', 'labrador', 'okla', 'wv', 'ark', 'miss.', 'island', 'columbia', 'brunswick', 
+    'saskatchewan', 'louisiana', 's.c.', 'ar', 'wis', 'nj', 'mich', 'massachusetts', 'ala.', 'ri', 'montana', 'maine', 'ark.', 'alaska', 'georgia', 'wyo.', 'neb', 'edward', 'n.d.', 'york', 'ms', 'kentucky', 'maryland', 'oreg.', 
+    'minnesota', 'mexico', 'conn', 'ontario', 'connecticut', 'tex.', 'fla', 'prince', 'nc', 'ill.', 'del', 'tn', 'nevada', 'washington', 'wi', 'ma', 'md', 'michigan', 'jersey', 'tennessee', 'me', 'mass', 'california', 'minn.', 
+    'dakota', 'minn', 'tenn.', 'mn', 'ind.', 'del.', 'n.h.', 'pa', 'miss', 'utah', 'nunavut', 'kans.', 'vermont', 'northwest', 'n.dak.', 'florida', 'mont.', 'co', 'pa.', 'ut', 'colo', 'newfoundland', 'ala', 'mississippi', 'va', 'oregon', 
+    'kansas', 'n.mex.', 'delaware', 'wisconsin', 'conn.', 'indiana', 'colo.', 'calif', 'yukon', 'states', 'mont', 'puerto', 'hampshire', 'carolina', 'nd', 'illinois', 'vt', 'nebraska', 'mo.', 'w.va.', 'r.i.', 'kan', 'united', 'nev', 
+    'virginia', 'guam', 'islands', 'arizona', 'mt', 'sc', 'ore', 'wyo', 'new', 'fl', 'wis.', 'american', 'missouri', 'quebec', 'ky.', 'mass.', 'ct', 'al', 'north', 'west', 'md.', 'arkansas', 'iowa', 'rhode', 'ga', 'oh', 'samoa', 'scotia', 
+    'nova', 'il', 'ky', 'alberta', 'ill', 'ohio', 'in', 'oklahoma', 'ks', 'idaho', 'sd', 'nebr.', 's.dak.', 'neb.', 'n.m.', 'nm', 'remote', 'az', 'n.j.', 'manitoba', 'nev.', 'us', 'wa', 'canada', 's.d.', 'home', 'ia', 'ind', 'de', 'wyoming', 'calif.', 'flexible'
+])
 
 places = set([
     "радовиш","ресен","сарај","славутич","студеничани","теарце","бережани","желино","липково","крива","паланка","зуунмод","неготино","ḩadīthah","ḩajjah","ḩalḩūl","ḩalabjah","ḩalfāyā","ḩalwān","ḩamāh","ḩarastā",
@@ -221,7 +218,7 @@ places = set([
     "bregenz","brejo","da","madre","de","deus","brejo","santo","bremen","bremerhaven","bremerton","bremervörde","brenham","brent","brentwood","brentwood","estates","brescia","bressanone","bresso","bressuire",
     "brest","bretten","breves","brezina","brezno","brājarājnagar","brčko","brăila","bria","bridgend","bridgeport","bridgeton","bridgetown","bridgeview","bridgewater","bridgwater","bridlington","brie-comte-robert","brierley","hill","brigham","city",
     "brighouse","brighton","brighton","east","brignoles","brikama","brilon","brindisi","brisbane","bristol","briton","ferry","brits","britz","brive-la-gaillarde","brixham","brixton","brno","broad","ripple","broadstairs",
-    "broadview","heights","brockton","brockville","brodósqui","brodnica","brody","broek","in","waterland","broek","op","langedijk","broken","arrow","broken","hill","bromma","bromsgrove","bron","bronkhorstspruit",
+    "broadview","heights","brockton","brockville","brodósqui","brodnica","brody","broek","in","waterland","broek","langedijk","broken","arrow","broken","hill","bromma","bromsgrove","bron","bronkhorstspruit",
     "bronnitsy","bronte","brook","park","brookfield","brookhaven","brookings","brookline","brooklyn","brooklyn","center","brooklyn","park","broomfield","brossard","brotas","brovary","brownhills","brownsburg","brownsville","brownwood",
     "bruay-la-buissière","bruchköbel","bruchsal","bruckmühl","brugge","brugherio","brumadinho","brumado","brummen","brunoy","brunssum","brunswick","bruntál","brusciano","brushy","creek","brusque","brussels","brvenica","bry-sur-marne","bryan",
     "bryanka","bryansk","bryant","brymbo","bryn","mawr-skyway","bryukhovetskaya","brzeg","brzesko","buíque","buôn","ma","thuột","bua","yai","buaran","bucak","bucaramanga","bucha","buchanan","bucharest",

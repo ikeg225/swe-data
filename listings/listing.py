@@ -1,7 +1,7 @@
 import re
 import requests
 from proxy import Proxy
-from locations import places
+from locations import places, english
 from bs4 import BeautifulSoup
 from useragent import UserAgent
 
@@ -10,8 +10,6 @@ class Listing:
         self.proxyOn = proxyOn
         self.url = url
         self.headers = headers
-        self.db = db
-        self.collection = db["companies"]
 
         if proxyOn:
             proxy = Proxy()
@@ -23,7 +21,7 @@ class Listing:
         
         while success != True:
             try:
-                self.req = self.get_req(url=url, headers=headers)
+                self.req = self.get_req(url, headers, redirect=False)
                 self.req.raise_for_status()
                 self.posting = BeautifulSoup(self.req.content, 'lxml')
                 self.baseurl = re.match('^https?:\/\/[^#?\/]+', url)[0]
@@ -32,31 +30,55 @@ class Listing:
                 print(err)
     
     @staticmethod
+    def clean_string(string):
+        return re.sub('[\W]+', '', string).lower()
+    
+    @staticmethod
     def clean_title(title):
         time = set(['summer', 'fall', 'winter', 'spring'])
-        upper = set(['ios', 'ui'])
+        upper = set(['ios', 'ui', 'it', 'ai', 'ml', 'qa', 'co', 'op', 'nx', 'sql', 'ee'])
+        co, op = False, False
         new_title, locations, times = [], [], []
         for word in title:
-            if word in time or word.isnumeric() or word in places:
-                if word in places:
+            if word in time or word.isnumeric() or word in places or word in english:
+                if word in places or word in english:
                     locations.append(word.capitalize())
                 else:
                     times.append(word.capitalize())
+                if word == 'co':
+                    co = True
+                if word == "op":
+                    op = True
             else:
                 if word in upper:
                     new_title.append(word.upper())
                 else:
                     new_title.append(word.capitalize())
-                
+        if co and op:
+            new_title.append("CO-OP")
         return { "position": ' '.join(new_title), "locations": ','.join(locations), "times": ' '.join(times) }
     
     @staticmethod
     def swe_position(title):
         intern_check, field_check = False, False
-        intern_keywords = set(['intern', 'internship'])
-        field_keywords = set(['software', 'data', 'trading', 'trade', 'web', 'development', 'python', 'java', 'javascript', 'ruby',
-        'user', 'interface', 'quantitative', 'full', 'stack', 'front', 'end', 'back', 'react', 'swift', 'ios', 'engineer',
-        'engineering', 'technology', 'android', 'analyst', 'c++', 'c#', 'tech', 'ai', 'mechanical'])
+        intern_keywords = set(['intern', 'internship', 'co', 'op', 'co-op', 'apprenticeship', 'apprentice', 'student', 'undergrad'])
+        field_keywords = set(['pipeline', 'server', 'connectivity', 'tableau', 'ethernet', 'artificial', 'c', 'dev', 'proxies', 'game', 
+        'connection', 'programmer', 'implementation', 'financial', 'data', 'ee', 'request', 'computational', 'modeler', 'interfaces', 'information', 
+        'platform', 'ruby', 'ciso', 'tools', 'analytic', 'test', 'raspberry', 'architect', 'python', 'energy', 'ios', 'qa', 'hardware', 'processor', 
+        'programs', 'software', 'textract', 'cpu', 'signal', 'app', 'code', 'autodesk', 'sql', 'technologies', 'exploratory', 'golang', 'systems', 'solutions', 
+        'cyberpatriot', 'developer', 'technicien', 'packages', 'web', 'processing', 'aerospace', 'dbs', 'socket', 'electronic', 'detect', 'security', 'cyber', 
+        'embedded', 'computing', 'circularity', 'giscience', 'engine', 'infrastructure', 'auto', 'requests', 'aws', 'programme', 'proxy', 'analyst', 'swe', 'back', 
+        'algorithms', 'backend', 'probabilistic', 'operation', 'development', 'android', 'integration', 'compiler', 'json', 'dell', 'debug', 'tech', 'detection', 
+        'ml', 'engineering', 'machine', 'react', 'autonomous', 'spatial', 'validation', 'c#', 'http', 'quantitative', 'complier', 'sw', 'emulation', 'infosec', 
+        'sensors', 'assurance', 'modeling', 'frontend', 'r', 'tool', 'technology', 'technician', 'computer', 'api', 'gpu', 'support', 'programming', 'automated', 
+        'usb', 'front', 'algorithm', 'sde', 'devops', 'urlopen', 'deep', 'neuromotor', 'core', 'engineer', 'py', 'process', 'devices', 'device', 'magnet', 'technican', 
+        'driver', 'documentation', 'interface', 'end', 'java', 'intel', 'wireless', 'swift', 'ops', 'internal', 'risk', 'system', 'strategy', 'optimization', 'analysis', 
+        'integrity', 'innovation', 'sourcing', 'mobile', 'prediction', 'automations', 'urllib', 'reliability', 'cloud', 'prisma', 'robotic', 'electrical', 'adapters', 
+        'framework', 'frameworks', 'ai', 'forecasting', 'os', 'graphs', 'full', 'spark', 'circuits', 'polytechnic', 'compute', 'quality', 'devop', 'c++', 'trading', 'quantum', 
+        'applied', 'graphics', 'simulation', 'operations', 'reinforcement', 'architecture', 'typescript', 'silicon', 'firmware', 'testing', 'stack', 'operating', 'robotics', 
+        'natural', 'production', 'go', 'applications', 'recognition', 'windows', 'trade', 'performance', 'vmware', 'predictive', 'angular', 'automation', 'virtual', 'site', 
+        'application', 'monitoring', 'javascript', 'user', 'opertions', 'it', 'cybersecurity', 'ip', 'technical', 'sensor', 'power', 'network', 'solution', 'datapath', 'gaming', 
+        'mechanical', 'nlp', 'analytics', 'module', 'coding', 'models', 'chipsets'])
         for word in title:
             if word in field_keywords:
                 field_check = True
@@ -96,19 +118,27 @@ class Listing:
         else:
             return requests.get(url, headers=headers, allow_redirects=redirect)
     
-    def add_to_database(self, name, base_url, post_url, locations, date, timeframe):
-        posting = {
-            "post": post_url,
-            "locations": locations,
-            "date": date,
-            "timeframe": timeframe
-        }
-        if self.collection.count_documents({ '_id' : base_url }, limit = 1):
-            self.db
-        else:
-            company = {
-                "_id" : base_url,
-                "name" : name,
-                "baseurl" : base_url,
-            }
-            self.db.insert_one(company)
+    def add_to_database(self, id, name, post_url, locations, date, timeframe, contents, currentday, posted, payhour):
+        print ({
+            'id': id,
+            'name': name, 
+            'post_url': post_url, 
+            'locations': locations, 
+            'date': date, 
+            'timeframe': timeframe,
+            'contents': contents,
+            'currentday': currentday,
+            'posted': posted,
+            'payhour': payhour
+        })
+        return
+    
+    def get_favicon(self, name, url):
+        favicon = "https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://" + url + "&size=256"
+        try:
+            response = self.get_req(favicon, self.headers, redirect=False)
+            response.raise_for_status()
+            with open("../swe/images/logos/" + name + ".png", 'wb') as f:
+                f.write(response.content)
+        except Exception as err:
+            print(err)
