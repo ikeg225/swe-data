@@ -11,6 +11,7 @@ class Levels:
         }
 
         self.req = requests.get(self.url, headers=headers)
+        self.postings = {}
     
     def sort_json(self):
         postings = json.loads(self.req.content)
@@ -53,4 +54,63 @@ class Levels:
                         'hourlysalary': hourlysalary
                     }
                 }
+        self.postings = new_postings
         return new_postings
+    
+    def get_job_titles(self):
+        jobs = set()
+        for i in self.postings:
+            for b in self.postings[i].keys():
+                jobs.add(b)
+        return jobs
+    
+    @staticmethod
+    def get_job_key(title, salaries):
+        if 'data' in title and 'engineer' in title:
+            ing = salaries.get('dataengineering', 0)
+            engineer = salaries.get('dataengineer', 0)
+            if ing != 0:
+                return ing
+            elif engineer != 0:
+                return engineer
+            else:
+                return 0
+        elif 'software' in title and 'engineer' in title:
+            return salaries.get('softwareengineer', 0)
+        elif 'quant' in title and 'trade' in title:
+            return salaries.get('quantitativetrader', 0)
+        elif 'market' in title:
+            return salaries.get('marketing', 0)
+        elif 'hardware' in title and 'engineer' in title:
+            return salaries.get('hardwareengineer', 0)
+        elif 'mechanical' in title and 'engineer' in title:
+            return salaries.get('mechanicalengineer', 0)
+        elif 'product' in title and 'design' in title:
+            return salaries.get('productdesigner', 0)
+        elif 'business' in title and 'analyst' in title:
+            return salaries.get('businessanalyst', 0)
+        elif 'human' in title and 'resource' in title:
+            return salaries.get('humanresources', 0)
+        elif 'data' in title and 'scien' in title:
+            tist = salaries.get('datascientist', 0)
+            science = salaries.get('datascience', 0)
+            if tist != 0:
+                return tist
+            elif science != 0:
+                return science
+            else:
+                return 0
+        elif 'quant' in title and 'research' in title:
+            return salaries.get('quantitativeresearcher', 0)
+        elif 'product' in title and 'manager' in title:
+            return salaries.get('productmanager', 0)
+        elif 'research' in title:
+            return salaries.get('research', 0)
+        elif 'tech' in title and 'program' in title and 'manager' in title:
+            return salaries.get('technicalprogrammanager', 0)
+        elif 'sale' in title:
+            return salaries.get('sales', 0)
+        elif 'data' in title and 'analy' in title:
+            return salaries.get('dataanalyst', 0)
+        else:
+            return 0

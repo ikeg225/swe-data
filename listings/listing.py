@@ -10,6 +10,7 @@ class Listing:
         self.proxyOn = proxyOn
         self.url = url
         self.headers = headers
+        self.db = db
 
         if proxyOn:
             proxy = Proxy()
@@ -36,7 +37,7 @@ class Listing:
     @staticmethod
     def clean_title(title):
         time = set(['summer', 'fall', 'winter', 'spring'])
-        upper = set(['ios', 'ui', 'it', 'ai', 'ml', 'qa', 'co', 'op', 'nx', 'sql', 'ee'])
+        upper = set(['ios', 'ui', 'it', 'ai', 'ml', 'qa', 'co', 'op', 'nx', 'sql', 'ee', 'cpu', 'go', 'dbs', 'aws', 'swe', 'api', 'gpu', 'sde', 'usb', 'os', 'ip', 'nlp'])
         co, op = False, False
         new_title, locations, times = [], [], []
         for word in title:
@@ -71,7 +72,7 @@ class Listing:
         'algorithms', 'backend', 'probabilistic', 'operation', 'development', 'android', 'integration', 'compiler', 'json', 'dell', 'debug', 'tech', 'detection', 
         'ml', 'engineering', 'machine', 'react', 'autonomous', 'spatial', 'validation', 'c#', 'http', 'quantitative', 'complier', 'sw', 'emulation', 'infosec', 
         'sensors', 'assurance', 'modeling', 'frontend', 'r', 'tool', 'technology', 'technician', 'computer', 'api', 'gpu', 'support', 'programming', 'automated', 
-        'usb', 'front', 'algorithm', 'sde', 'devops', 'urlopen', 'deep', 'neuromotor', 'core', 'engineer', 'py', 'process', 'devices', 'device', 'magnet', 'technican', 
+        'usb', 'front', 'algorithm', 'sde', 'devops', 'urlopen', 'deep', 'neuromotor', 'core', 'engineer', 'process', 'devices', 'device', 'technican', 
         'driver', 'documentation', 'interface', 'end', 'java', 'intel', 'wireless', 'swift', 'ops', 'internal', 'risk', 'system', 'strategy', 'optimization', 'analysis', 
         'integrity', 'innovation', 'sourcing', 'mobile', 'prediction', 'automations', 'urllib', 'reliability', 'cloud', 'prisma', 'robotic', 'electrical', 'adapters', 
         'framework', 'frameworks', 'ai', 'forecasting', 'os', 'graphs', 'full', 'spark', 'circuits', 'polytechnic', 'compute', 'quality', 'devop', 'c++', 'trading', 'quantum', 
@@ -118,19 +119,24 @@ class Listing:
         else:
             return requests.get(url, headers=headers, allow_redirects=redirect)
     
-    def add_to_database(self, id, name, post_url, locations, date, timeframe, contents, currentday, posted, payhour):
-        print ({
+    def add_to_database(self, id, company, company_short, main_url, name, post_url, locations, date, timeframe, contents, currentday, posted, posted_num, payhour):
+        self.db.collections['postings'].documents.upsert({
             'id': id,
+            'company': company,
+            'companyShort': company_short,
+            'mainURL': main_url,
             'name': name, 
-            'post_url': post_url, 
+            'postURL': post_url, 
             'locations': locations, 
             'date': date, 
             'timeframe': timeframe,
             'contents': contents,
             'currentday': currentday,
             'posted': posted,
+            'postedNum': posted_num,
             'payhour': payhour
         })
+        print(id)
         return
     
     def get_favicon(self, name, url):
@@ -140,5 +146,27 @@ class Listing:
             response.raise_for_status()
             with open("../swe/images/logos/" + name + ".png", 'wb') as f:
                 f.write(response.content)
+            return True
         except Exception as err:
             print(err)
+            return False
+    
+    def add_company(self, company, company_short, main_url):
+        search_parameters = {
+            'q'         : '*',
+            'query_by'  : 'company',
+            'filter_by' : 'id:=' + company_short
+        }
+        
+        if self.db.collections['companies'].documents.search(search_parameters)["found"] == 0:
+            found_logo = self.get_favicon(name=company_short, url=main_url)
+            document = {
+                'id': company_short,
+                'company': company,
+                'mainURL': main_url,
+                'foundLogo': found_logo
+            }
+            self.db.collections['companies'].documents.create(document)
+        
+        print(company_short)
+        return
