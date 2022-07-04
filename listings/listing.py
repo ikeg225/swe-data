@@ -116,9 +116,9 @@ class Listing:
             headers = {
                 'user-agent': UserAgent.randomAgent()
             }
-            return requests.get(url, proxies=self.proxies, headers=headers, allow_redirects=redirect)
+            return requests.get(url, proxies=self.proxies, headers=headers, allow_redirects=redirect, timeout=10)
         else:
-            return requests.get(url, headers=headers, allow_redirects=redirect)
+            return requests.get(url, headers=headers, allow_redirects=redirect, timeout=10)
     
     def get_redirect(self, url, headers, redirect=True):
         while True:

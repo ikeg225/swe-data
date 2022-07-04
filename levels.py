@@ -10,7 +10,7 @@ class Levels:
             'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36'
         }
 
-        self.req = requests.get(self.url, headers=headers)
+        self.req = requests.get(self.url, headers=headers, timeout=10)
         self.postings = {}
     
     def sort_json(self):

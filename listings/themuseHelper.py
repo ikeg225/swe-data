@@ -39,9 +39,13 @@ class MuseHelper(Listing):
 
                     post_id = post.get('id', '')
                     redirect_url = 'https://www.themuse.com/job/redirect/' + str(post_id)
-                    post_url = self.get_redirect(url=redirect_url, headers=self.headers, redirect=False).headers['Location'].lower()
-                    post_url = re.sub('themuse', 'sweintern', post_url)
-                    main_url = re.findall('^https?:\/\/([^#?\/]+)', post_url)[0]
+                    post_url = self.get_redirect(url=redirect_url, headers=self.headers, redirect=False).headers.get('Location', '').lower()
+                    if post_url:
+                        post_url = re.sub('themuse', 'sweintern', post_url)
+                        main_url = re.findall('^https?:\/\/([^#?\/]+)', post_url)[0]
+                    else:
+                        post_url = post.get('refs', {}).get('landing_page', '')
+                        main_url = re.findall('^https?:\/\/([^#?\/]+)', post_url)[0]
 
                     posted = self.currentday - date
 
