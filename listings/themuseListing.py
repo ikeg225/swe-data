@@ -10,10 +10,6 @@ class TheMuse:
         self.proxyOn = proxyOn
         self.headers = headers
         self.salaries = salaries
-        self.urls = []
-        first_page = json.loads(Listing(self.url, proxyOn, headers).get_raw())
-        for i in range(1, first_page["page_count"]):
-            self.urls.append(self.url[:-1] + str(i))
         self.db = db
         self.currentday = datetime.now(timezone.utc)
     
@@ -22,14 +18,10 @@ class TheMuse:
         return
 
     def run_all(self):
-        with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor: 
-            the_futures = [executor.submit(self.extract, link) for link in self.urls]
-        for future in the_futures:
-            try:
-                future.result()
-            except Exception as e:
-                print('Thread threw exception:', e)
-        return
+        first_page = json.loads(Listing(self.url, self.proxyOn, self.headers).get_raw())
+        for i in range(1, first_page["page_count"]):
+            self.extract(self.url[:-1] + str(i))    
+        #self.extract("https://www.themuse.com/api/public/jobs?category=Data%20and%20Analytics&category=Data%20Science&category=Mechanic&category=Science%20and%20Engineering&category=Software%20Engineer&category=Software%20Engineering&level=Internship&page=59")    
 
     def get_urls(self):
         return self.urls

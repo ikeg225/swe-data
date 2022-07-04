@@ -39,7 +39,8 @@ class MuseHelper(Listing):
 
                     post_id = post.get('id', '')
                     redirect_url = 'https://www.themuse.com/job/redirect/' + str(post_id)
-                    post_url = self.get_req(url=redirect_url, headers=self.headers, redirect=False).headers['Location']
+                    post_url = self.get_redirect(url=redirect_url, headers=self.headers, redirect=False).headers['Location'].lower()
+                    post_url = re.sub('themuse', 'sweintern', post_url)
                     main_url = re.findall('^https?:\/\/([^#?\/]+)', post_url)[0]
 
                     posted = self.currentday - date
@@ -53,7 +54,24 @@ class MuseHelper(Listing):
                     company_short = ''.join(re.findall('(\w+)', company_name)).lower()
                     pay_per_hour = self.salaries.get(company_short, 0)
                     if pay_per_hour != 0:
-                        pay_per_hour = Levels.get_job_key(title=name, salaries=pay_per_hour)
+                        pay_per_hour = int(Levels.get_job_key(title=name, salaries=pay_per_hour))
+                    
+                    print(pay_per_hour)
+                    posted_phrase = ""
+                    if posted.days == 1:
+                        posted_phrase = "1 day ago"
+                    elif posted.days == 0:
+                        posted_phrase = "today"
+                    else:
+                        posted_phrase = str(posted.days) + " days ago"
+
+                    print(company_short)
+
+                    found = self.add_company(
+                        company=company_name,
+                        company_short=company_short,
+                        main_url=main_url
+                    )
                     
                     self.add_to_database(
                         id = id,
@@ -67,13 +85,8 @@ class MuseHelper(Listing):
                         timeframe = position['times'],
                         contents = contents,
                         currentday = self.currentday.strftime('%m/%d/%Y'),
-                        posted = "1 day ago" if posted.days == 1 else str(posted.days) + " days ago",
+                        posted = posted_phrase,
                         posted_num = posted.days,
-                        payhour = pay_per_hour
-                    )
-                    
-                    self.add_company(
-                        company=company_name,
-                        company_short=company_short,
-                        main_url=main_url
+                        payhour = pay_per_hour,
+                        found_logo = found
                     )

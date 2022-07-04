@@ -16,7 +16,7 @@ def csv_to_txt():
 # csv_to_txt()
 
 english = set([
-    'wash.', 'ariz', 'ok', 'vt.', 'nv', 'la.', 'pennsylvania', 'n.y.', 'ca', 'texas', 'colorado', 'virgin', 'mi', 'tenn', 'south', 'hi', 'ore.', 'tx', 'wisc.', 'and', 'ne', 'la', 'ak', 'ga.', 'rico', 'ny', 
+    'wash.', 'ariz', 'ok', 'vt.', 'nv', 'la.', 'pennsylvania', 'n.y.', 'ca', 'texas', 'colorado', 'virgin', 'mi', 'tenn', 'hi', 'ore.', 'tx', 'wisc.', 'and', 'ne', 'la', 'ak', 'ga.', 'rico', 'ny', 
     'mo', 'british', 'mich.', 'wash', 'alabama', 'or', 'va.', 'hawaii', 'fla.', 'nh', 'wy', 'n.c.', 'territories', 'ariz.', 'okla.', 'id', 'labrador', 'okla', 'wv', 'ark', 'miss.', 'island', 'columbia', 'brunswick', 
     'saskatchewan', 'louisiana', 's.c.', 'ar', 'wis', 'nj', 'mich', 'massachusetts', 'ala.', 'ri', 'montana', 'maine', 'ark.', 'alaska', 'georgia', 'wyo.', 'neb', 'edward', 'n.d.', 'york', 'ms', 'kentucky', 'maryland', 'oreg.', 
     'minnesota', 'mexico', 'conn', 'ontario', 'connecticut', 'tex.', 'fla', 'prince', 'nc', 'ill.', 'del', 'tn', 'nevada', 'washington', 'wi', 'ma', 'md', 'michigan', 'jersey', 'tennessee', 'me', 'mass', 'california', 'minn.', 

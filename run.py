@@ -9,8 +9,14 @@ level = Levels()
 salaries = level.sort_json()
 typesense = TypesenseActions()
 
+typesense.del_cr_collection("postings")
+typesense.del_cr_collection("companies")
+typesense.start_companies()
+
 muse = TheMuse(db=typesense.client, salaries=salaries, proxyOn=True)
 muse.run_all()
+
+typesense.del_test_companies()
 
 #listing = Listing(url="https://akunacapital.com/careers?experience=intern&search_term=#careers", db=None, proxyOn=False, headers=headers)
 #listing = listing.get_listing()

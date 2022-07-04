@@ -22,6 +22,7 @@ class Listing:
         
         while success != True:
             try:
+                print('hi2')
                 self.req = self.get_req(url, headers, redirect=False)
                 self.req.raise_for_status()
                 self.posting = BeautifulSoup(self.req.content, 'lxml')
@@ -119,7 +120,15 @@ class Listing:
         else:
             return requests.get(url, headers=headers, allow_redirects=redirect)
     
-    def add_to_database(self, id, company, company_short, main_url, name, post_url, locations, date, timeframe, contents, currentday, posted, posted_num, payhour):
+    def get_redirect(self, url, headers, redirect=True):
+        while True:
+            try:
+                print('hi')
+                return self.get_req(url, headers, redirect)
+            except Exception as err:
+                print(err)
+    
+    def add_to_database(self, id, company, company_short, main_url, name, post_url, locations, date, timeframe, contents, currentday, posted, posted_num, payhour, found_logo):
         self.db.collections['postings'].documents.upsert({
             'id': id,
             'company': company,
@@ -134,22 +143,32 @@ class Listing:
             'currentday': currentday,
             'posted': posted,
             'postedNum': posted_num,
-            'payhour': payhour
+            'payhour': payhour,
+            'foundLogo': found_logo
         })
         print(id)
         return
     
     def get_favicon(self, name, url):
+        clearbit_fav = "https://logo.clearbit.com/" + url
         favicon = "https://t1.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://" + url + "&size=256"
-        try:
-            response = self.get_req(favicon, self.headers, redirect=False)
-            response.raise_for_status()
-            with open("../swe/images/logos/" + name + ".png", 'wb') as f:
-                f.write(response.content)
-            return True
-        except Exception as err:
-            print(err)
-            return False
+        while True:
+            try:
+                response = self.get_req(clearbit_fav, self.headers, redirect=False)
+                if response.status_code != 404:
+                    with open("../swe/public/images/logos/" + name + ".png", 'wb') as f:
+                        f.write(response.content)
+                    return True
+
+                response = self.get_req(favicon, self.headers, redirect=False)
+                if response.status_code != 404:
+                    with open("../swe/public/images/logos/" + name + ".png", 'wb') as f:
+                        f.write(response.content)
+                    return True
+                
+                return False
+            except Exception as err:
+                print(err)
     
     def add_company(self, company, company_short, main_url):
         search_parameters = {
@@ -167,6 +186,6 @@ class Listing:
                 'foundLogo': found_logo
             }
             self.db.collections['companies'].documents.create(document)
+            return found_logo
         
-        print(company_short)
-        return
+        return self.db.collections['companies'].documents.search(search_parameters)["hits"][0]["document"]["foundLogo"]
